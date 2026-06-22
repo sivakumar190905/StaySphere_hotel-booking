@@ -1,0 +1,48 @@
+version: '3.8'
+
+services:
+  staysphere-db:
+    image: postgres:16-alpine
+    container_name: staysphere-db
+    environment:
+      POSTGRES_DB: staysphere
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: staysphere_secure_pass_2026
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d staysphere"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  staysphere-backend:
+    build:
+      context: ./staysphere-backend
+      dockerfile: Dockerfile
+    container_name: staysphere-backend
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://staysphere-db:5432/staysphere
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: staysphere_secure_pass_2026
+      JWT_SECRET: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970
+    depends_on:
+      staysphere-db:
+        condition: service_healthy
+
+  staysphere-frontend:
+    build:
+      context: ./hotel booking
+      dockerfile: Dockerfile
+    container_name: staysphere-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - staysphere-backend
+
+volumes:
+  postgres_data:

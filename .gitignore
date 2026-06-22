@@ -1,0 +1,28 @@
+# IDEs
+.vscode/
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Node.js
+node_modules/
+npm-debug.log
+yarn-error.log
+dist/
+build/
+.env
+
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+*.nar
+*.ear
+*.log
+.settings/
+.classpath
+.project
